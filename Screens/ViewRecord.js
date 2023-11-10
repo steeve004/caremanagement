@@ -33,7 +33,7 @@ export default function ViewRecord({navigation})
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#2645B1',
+    backgroundColor: '#5B9F8F',
     alignItems: 'center',
     justifyContent: 'center',
   },

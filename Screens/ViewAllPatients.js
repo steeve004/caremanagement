@@ -5,80 +5,47 @@
  * Vijay Jannu--301413452
  */
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text,ScrollView, SafeAreaView, StatusBar, View,TextInput,TouchableOpacity} from 'react-native';
 
 
-export default function ViewAllPatients({navigation})
+export default function ViewAllPatients()
 {
+  const [patients, setPatients] = useState([])
+
+  useEffect(() =>{
+    fetch("http://127.0.0.1:8000/patients")
+    .then(response => response.json())
+    .then(data => setPatients(data))
+    .catch(error => console.error('Error fetching data:', error));
+    }, [])
+
+
   return (
     <SafeAreaView style={styles.container}>
-         <View style={styles.darkBackground}>
-             <Text style={styles.logo}>Patient Clinical List</Text>
+      <ScrollView>
+        {patients.map((patient, index) => (
+         <View style={styles.darkBackground} key = {index}>
+          <View style={styles.body}>
+            <Text> {patient.name} </Text>
+            <Text> {patient.Contact} </Text>
+            <Text> {patient.Allergies} </Text>
+            <Text> {patient.Roomnumber} </Text>
+            <Text> {patient.Dob} </Text>
+            <Text> {patient.medcondition} </Text>
          </View>
- 
-         <View style={styles.lightBackground}>
-           <View style={styles.body}>
-             <Text style={styles.labels}>Patient ID </Text>
-             <Text style={styles.labels}>Patient Name </Text>
-             <Text style={styles.labels}>Patient DOB</Text>
-             <Text style={styles.labels}>Contact Number</Text>
-           </View>
-           <View style={styles.body}>
-             <Text style={styles.label}>000344234 </Text>
-             <Text style={styles.label}>Larry</Text>
-             <Text style={styles.label}>10/24/1990</Text>
-             <Text style={styles.label}>3455353433</Text>
-           </View>
-           <View style={styles.body}>
-             <Text style={styles.label}>000383939 </Text>
-             <Text style={styles.label}>John </Text>
-             <Text style={styles.label}>09/20/1982</Text>
-             <Text style={styles.label}>3652545724</Text>
-           </View>
-           <View style={styles.body}>
-             <Text style={styles.label}>535353524 </Text>
-             <Text style={styles.label}>Hamilton </Text>
-             <Text style={styles.label}>03/08/1997</Text>
-             <Text style={styles.label}>5765767577</Text>
-           </View>
-           <View style={styles.body}>
-             <Text style={styles.label}>245454534 </Text>
-             <Text style={styles.label}>Marquese </Text>
-             <Text style={styles.label}>07/23/1978</Text>
-             <Text style={styles.label}>2535646788</Text>
-           </View>
-           <View style={styles.body}>
-             <Text style={styles.label}>356465456 </Text>
-             <Text style={styles.label}>Sam </Text>
-             <Text style={styles.label}>03/28/1986</Text>
-             <Text style={styles.label}>3646576575</Text>
-           </View>
-           <View style={styles.body}>
-             <Text style={styles.label}>654363545 </Text>
-             <Text style={styles.label}>Max </Text>
-             <Text style={styles.label}>1978</Text>
-             <Text style={styles.label}>5675647657</Text>
-           </View>
- 
-           
-         
-           <View style={styles.button}>
-         <TouchableOpacity
-           onPress={() => navigation.navigate('HomePage')}>
-           <Text style={styles.buttonText}>Return Home</Text>         
-         </TouchableOpacity>
+
          </View>
- 
-         </View>
-     </SafeAreaView>
+      ))}
+      </ScrollView>
+    </SafeAreaView>
    );
  }
  
  const styles = StyleSheet.create({
    container: {
      flex: 1,
-     backgroundColor: '#fff',
+     backgroundColor: '#E6E6E6',
    },
    scrollView: {
      marginHorizontal: 10,
@@ -89,7 +56,7 @@ export default function ViewAllPatients({navigation})
    },
    logo: {  
      fontSize: 32,
-     color: 'white',
+     color: 'black',
      marginTop:60,
      marginBottom:20,
      marginLeft: 20,
@@ -102,7 +69,7 @@ export default function ViewAllPatients({navigation})
      margin: 10,
      color: 'white',
      borderRadius: 10,
-     backgroundColor: '#2645B1',
+     backgroundColor: '#0A5341',
      textAlign: 'center',
     },
    label: {
@@ -112,7 +79,7 @@ export default function ViewAllPatients({navigation})
     paddingBottom: 9,
     paddingTop: 9,
     textAlign: 'center',
-    backgroundColor: '#D8E0FF',
+    backgroundColor: '#5B9F8F',
    },
    input: {
      height: 40,
@@ -124,7 +91,7 @@ export default function ViewAllPatients({navigation})
      borderRadius: 10,
    },
    darkBackground: {
-     backgroundColor: '#2645B1',
+     backgroundColor: '#5B9F8F',
    },
    lightBackground: {
      alignItems: 'center',
@@ -133,7 +100,7 @@ export default function ViewAllPatients({navigation})
      padding: 20,
    },
    button: {
-     backgroundColor: '#2645B1',
+     backgroundColor: '#0A5341',
      width: 220,
      height: 40,
      marginTop: 20,

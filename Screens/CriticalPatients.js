@@ -58,7 +58,7 @@ export default function CriticalPatients({navigation})
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#E6E6E6',
   },
   body: {
    flex: 1,
@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
   },
   title: {  
     fontSize: 32,
-    color: 'white',
+    color: 'black',
     marginTop:60,
     marginBottom:20,
     marginLeft: 20,
@@ -83,16 +83,16 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   darkBackground: {
-    backgroundColor: '#2645B1',
+    backgroundColor: '#5B9F8F',
   },
   lightBackground: {
-    backgroundColor: '#D8E0FF',
+    backgroundColor: '#5B9F8F',
     borderRadius: 20,
     margin: 30,
     padding: 20,
   },
   button: {
-    backgroundColor: '#2645B1',
+    backgroundColor: '#0A5341',
     width: 220,
     height: 40,
     marginTop: 20,
