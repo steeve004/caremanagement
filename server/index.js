@@ -16,10 +16,19 @@ db.once('open', ()=>{
   console.log("!!!! Connected to db: " + uristring)
 });
 
-// const readingSchema = new mongoose.Schema({
-//   diastolic: Number,
-//   systolic: Number
-// });
+const readingSchema = new mongoose.Schema({
+   diastolic: Number,
+   systolic: Number
+ });
+
+ const testSchema = new mongoose.Schema({
+  patient_id: String,
+  date: String,
+  nurse_name: String,
+  type: String,
+  category: String,
+  readings: readingSchema
+ })
 
  const patientSchema = new mongoose.Schema({
     name: String,
@@ -27,10 +36,11 @@ db.once('open', ()=>{
     Allergies: String,
     Roomnumber: String,
     DOb: String,
-    medcondition: String
+    medcondition: String,
+    patienttests: [testSchema]
  });
 
-// //compiles the schema into a model, opening (or creating, if non existent) the 'User' collection in the mongoDB database
+// //compiles the schema into a model, opening (or creating, if non existent) the 'Patient' collection in the mongoDB database
 let PatientsModel = mongoose.model('patients', patientSchema);
 
 
@@ -49,6 +59,7 @@ server.listen(PORT, HOST, function () {
   console.log('********************')
   console.log(' /patients')
   console.log(' /patients/:id')
+  console.log(' /patients/:id/tests')
 })
 
 server.use(restify.plugins.fullResponse());
@@ -69,19 +80,13 @@ server.get('/patients', function (req, res, next) {
       return next(new Error(JSON.stringify(error.errors)));
     })
 
-  // // Find every entity within the given collection
-  // patientsSave.find({}, function (error, patients) {
-
-  //   // Return all of the patients in the system
-  //   res.send(patients)
-  // })
 })
 
-// Get a single Patient by their user id
+// Get a single Patient by their patient id
 server.get('/patients/:id', function (req, res, next) {
   console.log('GET /patients/:id params=>' + JSON.stringify(req.params));
 
-  //find a single user by their id on db
+  //find a single patient by their id on db
   PatientsModel.findOne({ _id: req.params.id})
     .then((patient)=>{
       console.log("found patient:" + patient);
@@ -100,20 +105,7 @@ server.get('/patients/:id', function (req, res, next) {
       return next(new error(JSON.stringify(error.errors)));
     })
 
-  // // Find a single patient by their id within save
-  // patientsSave.findOne({ _id: req.params.id }, function (error, patient) {
-
-  //   // If there are any errors, pass them to next in the correct format
-  //   if (error) return next(new Error(JSON.stringify(error.errors)))
-
-  //   if (patient) {
-  //     // Send the patient if no issues
-  //     res.send(patient)
-  //   } else {
-  //     // Send 404 header if the user doesn't exist
-  //     res.send(404)
-  //   }
-  // })
+  
 })
 
 
@@ -131,6 +123,8 @@ server.post('/patients', function (req, res, next) {
     medcondition: req.body.medcondition  
 
   });
+
+  //create the patient and save on db
   newPatient.save()
     .then((patient)=>{
       console.log("saved patient:" + patient);
@@ -144,15 +138,7 @@ server.post('/patients', function (req, res, next) {
       return next(new error(JSON.stringify(error.errors)));
     })
 
-  // // Create the patient using the persistence engine
-  // patientsSave.create(newPatient, function (error, patient) {
   
-  //   // If there are any errors, pass them to next in the correct format
-  //   if (error) return next(new Error(JSON.stringify(error.errors)))
-
-  //   // Send the patient if no issues
-  //   res.send(201, patient)
-  // })
 })
 
 // // Update a patient by their id
@@ -214,14 +200,83 @@ server.del('/patients/:id', function (req, res, next) {
       return next(new Error(JSON.stringify(error.errors)));
     })
 
-  // // Delete the patient with the persistence engine
-  // patientsSave.deleteMany({}, function (error) {
 
-  //   // If there are any errors, pass them to next in the correct format
-  //   if (error) return next(new Error(JSON.stringify(error.errors)))
+    //create a new test record for a patient
+    server.post('/patients/:id/tests', function (req, res, next){
+      console.log('POST /patients/:id/tests params=>' + JSON.stringify(req.params));
+      console.log('POST /patients/:id/tests body=>' + JSON.stringify(req.params));
 
-  //   // Send a 204 response
-  //   res.send(204)
-  // })
+      console.log(req.body.readings)
+
+      let newTest = new PatientsModel({
+        patient_id: req.params.id,
+        date: req.body.date,
+        nurse_name: req.body.nurse_name,
+        type: req.body.type,
+        category: req.body.category,
+        readings: {
+          diastolic: req.body.readings.diastolic,
+          systolic: req.body.readings.systolic
+        }
+      })
+
+      PatientsModel.findOne({_id: req.params.id})
+      .then(patientObj => {
+        patientObj.tests.push(newTest);
+        return patientObj.save();
+      })
+      .then(patientObj => {
+        console.log('patientObj updated');
+        res.json(patientObj);
+      })
+      .catch(err => {
+        if (err) throw err;
+      })
+
+    })
+
+    //getting all test in the system
+    server.get('/patients/:id/tests', function (req, res, next){
+      console.log('GET //patients/:id/tests params=>' + JSON.stringify(req.params));
+
+      //finding every entity in db
+      PatientsModel.findById({_id: req.params.id})
+      .then((patients)=>{
+
+        //returning all tests in the system
+        res.send(patients.tests);
+        return next();
+      })
+      .catch((error)=>{
+        return next(new Error(JSON.stringify(error.errors)));
+      });
+    })
+
+    // Get a specific test record for a patient
+    server.get('/patients/:patientId/tests/:testId', function (req, res, next) {
+      const patientId = req.params.patientId;
+      const testId = req.params.testId;
+      PatientsModel.findOne({ _id: patientId })
+      .then((patient) => {
+        if (!patient) {
+          return res.status(404).send('Patient not found');
+        }
+        const test = patient.tests.find((test) =>test._id.toString() === testId);
+
+        if (test) {
+          res.json(test);
+        }else {
+          res.status(404).send('Test not found');
+        }
+
+        })
+
+        .catch((err) => {
+          console.error('Error finding test:', err);
+
+          res.status(500).send('Internal server error');
+        });
+});
+
+
 })
-
