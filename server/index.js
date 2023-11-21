@@ -16,10 +16,7 @@ db.once('open', ()=>{
   console.log("!!!! Connected to db: " + uristring)
 });
 
-// const readingSchema = new mongoose.Schema({
-//    diastolic: Number,
-//    systolic: Number
-//  });
+
 
  const testSchema = new mongoose.Schema({
   date: String,

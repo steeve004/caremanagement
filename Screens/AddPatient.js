@@ -7,93 +7,91 @@
 
 import React, {useState} from 'react';
 import { StyleSheet, Text, Alert, SafeAreaView, View,TextInput, TouchableOpacity, } from 'react-native';
-
+import axios from 'axios';
 
 //export default function AddPatient({navigation})
-const AddPatient = ({navigation}) =>
-{ const [firstName, setFirstName] = useState('AboutReact')
-  
-  const btnPressed= () =>
-  Alert.alert(
-    "Success",
-    "Record Added Successfully",
-    [
-      {
-        text: "Cancel",
-        onPress: () => console.log("Cancel Pressed"),
-        style: "cancel"
-      },
-      { text: "OK", onPress: () => console.log("OK Pressed") }
-    ]
-  );
+const PatientForm = () =>
+{ const [formData, setFormData] = useState({
+    name: '',
+    Contact: '',
+    Allergies: '',
+    Roomnumber: '',
+    DOb: '',
+    medcondition: '',
+
+});
+  //Function that handles Submission
+  const handleSubmit = async () => {
+    try {
+      // Make a POST request to the server endpoint
+      const response = await axios.post('http://127.0.0.1:8000/patients', formData);
+      console.log('Response from server:', response.data);
+      // Handle success, update UI or navigate to another screen
+
+    }
+    catch (error) {
+      console.error('Error submitting form:', error);
+      // Handle error, display an error message
+    }
+  };
+
+
   return (
-    <SafeAreaView style={styles.container}>
-        <View style={styles.darkBackground}>
-            <Text style={styles.logo}>Patient Clinical Information</Text>
+<SafeAreaView style={styles.container}>
+<View style={styles.darkBackground}>
+   <Text style={styles.logo}>Patient Clinical Information</Text>
         </View>
 
-        <View style={styles.lightBackground}>
-          <View style={styles.body}>
-            <Text style={styles.label}>First Name: </Text>
-            <TextInput
-                style={styles.input}
-                value={firstName}
-                onChangeText={(firstname) => setFirstName(firstname)}/>
-          </View>
+    <View > 
+      <Text style = {{ fontSize: 14,width: 88,margin: 5, paddingBottom: 6, paddingTop: 9, textAlign: 'center',backgroundColor: '#5B9F8F', borderRadius: 10}} >Name:</Text>
+      <TextInput style = {{ height: 30, width: 220, margin: 10, backgroundColor: 'white',fontSize: 12,padding: 10,borderRadius: 10,}}
+        onChangeText={(text) => setFormData({ ...formData, name: text })}
+        value={formData.name}
+      />
 
-          <View style={styles.body}>
-            <Text style={styles.label}>Last Name: </Text>
-            <TextInput
-                style={styles.input}/>
-          </View>
+      <Text style = {{ fontSize: 14, width: 88,margin: 5, paddingBottom: 9, paddingTop: 9, textAlign: 'center', backgroundColor: '#5B9F8F', borderRadius: 10}}>Contact:</Text>
+      <TextInput  style = {{ height: 30, width: 220, margin: 10, backgroundColor: 'white',fontSize: 12,padding: 10,borderRadius: 10,}}
+        onChangeText={(text) => setFormData({ ...formData, Contact: text })}
+        value={formData.Contact}
+      />
 
-          <View style={styles.body}>
-            <Text style={styles.label}>DOB: </Text>
-            <TextInput
-                style={styles.input}/>
-          </View>
+      <Text style =  {{ fontSize: 14,width: 88,margin: 5, paddingBottom: 9, paddingTop: 9, textAlign: 'center',backgroundColor: '#5B9F8F', borderRadius: 10}}>Allergies:</Text>
+      <TextInput style = {{ height: 30, width: 220, margin: 10, backgroundColor: 'white',fontSize: 12,padding: 10,borderRadius: 10,}}
+        onChangeText={(text) => setFormData({ ...formData, Allergies: text })}
+        value={formData.Allergies}
+      />
 
-          <View style={styles.body}>
-            <Text style={styles.label}>Gender: </Text>
-            <TextInput
-                style={styles.input}/>
-          </View>
+      <Text  style =  {{ fontSize: 14,width: 88,margin: 5, paddingBottom: 9, paddingTop: 9, textAlign: 'center',backgroundColor: '#5B9F8F', borderRadius: 10}}>Room Number:</Text>
+      <TextInput style = {{ height: 30, width: 220, margin: 10, backgroundColor: 'white',fontSize: 12,padding: 10,borderRadius: 10,}}
+        onChangeText={(text) => setFormData({ ...formData, Roomnumber: text })}
+        value={formData.Roomnumber}
+      />
 
-          <View style={styles.body}>
-            <Text style={styles.label}>Age: </Text>
-            <TextInput
-                style={styles.input}/>
-          </View>
+      <Text  style =  {{ fontSize: 14,width: 88,margin: 5, paddingBottom: 9, paddingTop: 9, textAlign: 'center',backgroundColor: '#5B9F8F', borderRadius: 10}}>Date of Birth:</Text>
+      <TextInput style = {{ height: 30, width: 220, margin: 10, backgroundColor: 'white',fontSize: 12,padding: 10,borderRadius: 10,}}
+        onChangeText={(text) => setFormData({ ...formData, DOb: text })}
+        value={formData.DOb}
+      />
 
-          <View style={styles.body}>
-            <Text style={styles.label}>Telephone: </Text>
-            <TextInput
-                style={styles.input}/>
-          </View>
+      <Text style =  {{ fontSize: 14,width: 88,margin: 5, paddingBottom: 9, paddingTop: 9, textAlign: 'center',backgroundColor: '#5B9F8F', borderRadius: 10}}>Medical Condition:</Text>
+      <TextInput style = {{ height: 30, width: 220, margin: 10, backgroundColor: 'white',fontSize: 12,padding: 10,borderRadius: 10,}}
+        onChangeText={(text) => setFormData({ ...formData, medcondition: text })}
+        value={formData.medcondition}
+      />
 
-          <View style={styles.body}>
-            <Text style={styles.label}>Address: </Text>
-            <TextInput
-                style={styles.input}/>
-          </View>  
-        
-          <View style={styles.button}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('HomePage', {
-            paramKey: firstName,
-          })}>
-          <Text style={styles.buttonText}>Add Patient</Text>         
-        </TouchableOpacity>
+      <TouchableOpacity onPress={handleSubmit}>
+        <View style={{ backgroundColor: '#0A5341', width:220, height:40, padding: 10, borderRadius:12, marginTop: 20, alignItems:'center' }}>
+          <Text style={{ color: 'white', textAlign: 'center' }}>Add Patient</Text>
         </View>
+      </TouchableOpacity>
 
-        
+    </View>
 
-        </View>
     </SafeAreaView>
   );
 };
 
-export default AddPatient;
+export default PatientForm;
 
 const styles = StyleSheet.create({
   container: {
