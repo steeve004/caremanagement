@@ -27,13 +27,6 @@ export default function HomePage ({navigation})
           </View>
 
           <View style={styles.button}>
-          <TouchableOpacity
-          onPress={() => navigation.navigate('ViewPatient')}> 
-            <Text style={styles.buttonText}>View Patient</Text>
-          </TouchableOpacity> 
-        </View>
-
-        <View style={styles.button}>
         <TouchableOpacity
           onPress={() => navigation.navigate('ViewAllPatients')}> 
             <Text style={styles.buttonText}>List All Patients</Text>
@@ -46,6 +39,17 @@ export default function HomePage ({navigation})
             <Text style={styles.buttonText}>Add Patient Record</Text>
           </TouchableOpacity>                    
         </View>
+
+
+          <View style={styles.button}>
+          <TouchableOpacity
+          onPress={() => navigation.navigate('ViewPatient')}> 
+            <Text style={styles.buttonText}>View Patient</Text>
+          </TouchableOpacity> 
+        </View>
+
+        
+          
 
         <View style={styles.button}>
         <TouchableOpacity
@@ -61,12 +65,12 @@ export default function HomePage ({navigation})
           </TouchableOpacity>        
         </View>
         
-        <View style={styles.button}>
+        {/* <View style={styles.button}>
         <TouchableOpacity
           onPress={() => navigation.navigate('CriticalPatients')}> 
             <Text style={styles.buttonText}>Critical Condition Patients</Text>
           </TouchableOpacity>          
-        </View>
+        </View> */}
         </View>
       </View>
     );
