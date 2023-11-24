@@ -16,8 +16,6 @@ db.once('open', ()=>{
   console.log("!!!! Connected to db: " + uristring)
 });
 
-
-
  const testSchema = new mongoose.Schema({
   date: String,
   nurse_name: String,
